@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>TradingJournal Pro - Professional Edition</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+        
+        :root { --brand-blue: #2563eb; }
+
+        body { 
+            font-family: 'Inter', sans-serif; 
+            -webkit-tap-highlight-color: transparent;
+            scroll-behavior: smooth;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(229, 231, 235, 1);
+        }
+
+        .force-hidden { display: none !important; }
+        
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #9ca3af; }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 1px;
+            background-color: #f3f4f6;
+        }
+        
+        .calendar-day {
+            min-height: 70px;
+            background: white;
+            padding: 4px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: all 0.2s ease;
+        }
+
+        @media (max-width: 640px) {
+            .calendar-day { min-height: 55px; font-size: 0.75rem; }
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(100%); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .animate-slide-up { animation: slideUp 0.3s ease-out forwards; }
+        .animate-fade-in { animation: fadeIn 0.2s ease-out forwards; }
+
+        .modal-overlay {
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(4px);
+        }
+
+        .active-scale:active { transform: scale(0.96); }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-900 min-h-screen pb-20 md:pb-0">
+
+    <!-- Auth Container -->
+    <div id="auth-view" class="flex items-center justify-center min-h-screen p-6">
+        <div class="w-full max-w-md glass-card p-8 rounded-[2rem] shadow-2xl border-t-8 border-blue-600 animate-fade-in">
+            <div class="flex flex-col items-center mb-8">
+                <div class="p-4 bg-blue-600 rounded-2xl text-white mb-4 shadow-lg shadow-blue-200">
+                    <i data-lucide="trending-up" class="w-10 h-10"></i>
+                </div>
+                <h1 class="text-3xl font-black tracking-tight text-slate-800" id="auth-title">TradeLog Pro</h1>
+                <p class="text-slate-500 text-sm mt-1 text-center" id="auth-subtitle">Pantau progres trading Anda secara profesional</p>
+            </div>
+
+            <form id="auth-form" class="space-y-4">
+                <div class="space-y-1">
+                    <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 text-xs">Email</label>
+                    <input type="email" id="email" required class="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500 transition-all outline-none" placeholder="nama@email.com">
+                </div>
+                <div class="space-y-1">
+                    <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 text-xs">Password</label>
+                    <input type="password" id="password" required class="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500 transition-all outline-none" placeholder="••••••••">
+                </div>
+                <button type="submit" id="auth-submit-btn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-black py-5 rounded-2xl transition-all shadow-xl shadow-blue-100 active-scale">
+                    Masuk Sekarang
+                </button>
+            </form>
+
+            <div class="mt-8 text-center text-sm">
+                <span id="auth-toggle-text" class="text-slate-400">Belum punya akun?</span>
+                <button id="auth-toggle-btn" class="text-blue-600 font-bold hover:underline ml-1">Daftar Akun</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main App Container -->
+    <div id="app-view" class="hidden min-h-screen flex flex-col">
+        <!-- Navbar -->
+        <nav class="bg-white/80 backdrop-blur-md border-b border-slate-200 px-4 md:px-8 py-4 sticky top-0 z-40">
+            <div class="max-w-7xl mx-auto flex justify-between items-center">
+                <div class="flex items-center space-x-3">
+                    <div class="p-2 bg-blue-600 rounded-xl text-white shadow-md">
+                        <i data-lucide="line-chart" class="w-5 h-5"></i>
+                    </div>
+                    <span class="font-black text-xl tracking-tighter text-slate-800 uppercase">TRADELOG<span class="text-blue-600">PRO</span></span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <button id="settings-btn" class="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-all">
+                        <i data-lucide="settings" class="w-5 h-5"></i>
+                    </button>
+                    <button id="logout-btn" class="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all">
+                        <i data-lucide="log-out" class="w-5 h-5"></i>
+                    </button>
+                </div>
+            </div>
+        </nav>
+
+        <main class="flex-grow p-4 md:p-8 max-w-7xl mx-auto w-full space-y-6 md:space-y-8">
+            <!-- Target Bulanan -->
+            <div id="target-container" class="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm">
+                <div class="flex justify-between items-center mb-2">
+                    <h3 class="text-xs font-black text-slate-400 uppercase tracking-widest">Target Profit Bulan Ini</h3>
+                    <span id="target-percentage" class="text-xs font-bold text-blue-600">0%</span>
+                </div>
+                <div class="w-full bg-slate-100 h-3 rounded-full overflow-hidden">
+                    <div id="target-progress" class="bg-blue-600 h-full transition-all duration-1000" style="width: 0%"></div>
+                </div>
+                <div class="flex justify-between mt-2 text-[10px] font-bold text-slate-400">
+                    <span id="target-current">0</span>
+                    <span id="target-goal">Goal: 0</span>
+                </div>
+            </div>
+
+            <!-- Stats Dashboard -->
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6">
+                <div class="bg-white p-4 md:p-6 rounded-3xl border border-slate-200 shadow-sm">
+                    <div class="flex justify-between items-start mb-3">
+                        <div class="p-2 bg-blue-50 text-blue-600 rounded-lg"><i data-lucide="activity" class="w-4 h-4"></i></div>
+                        <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest text-right">Total Trade</span>
+                    </div>
+                    <p class="text-2xl md:text-3xl font-black text-slate-800" id="stat-total">0</p>
+                </div>
+                <div class="bg-white p-4 md:p-6 rounded-3xl border border-slate-200 shadow-sm">
+                    <div class="flex justify-between items-start mb-3">
+                        <div class="p-2 bg-green-50 text-green-600 rounded-lg"><i data-lucide="wallet" class="w-4 h-4"></i></div>
+                        <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest text-right">Net Profit</span>
+                    </div>
+                    <p class="text-2xl md:text-3xl font-black" id="stat-profit">0</p>
+                </div>
+                <div class="bg-white p-4 md:p-6 rounded-3xl border border-slate-200 shadow-sm">
+                    <div class="flex justify-between items-start mb-3">
+                        <div class="p-2 bg-purple-50 text-purple-600 rounded-lg"><i data-lucide="target" class="w-4 h-4"></i></div>
+                        <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest text-right">Win Rate</span>
+                    </div>
+                    <p class="text-2xl md:text-3xl font-black text-slate-800" id="stat-winrate">0%</p>
+                </div>
+                <div class="bg-white p-4 md:p-6 rounded-3xl border border-slate-200 shadow-sm">
+                    <div class="flex justify-between items-start mb-3">
+                        <div class="p-2 bg-orange-50 text-orange-600 rounded-lg"><i data-lucide="zap" class="w-4 h-4"></i></div>
+                        <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest text-right">P. Factor</span>
+                    </div>
+                    <p class="text-2xl md:text-3xl font-black text-slate-800" id="stat-pf">0.00</p>
+                </div>
+            </div>
+
+            <!-- Charts -->
+            <div class="bg-white p-4 md:p-6 rounded-3xl border border-slate-200 shadow-sm">
+                <h3 class="font-black text-slate-800 flex items-center uppercase tracking-tight text-sm mb-4">
+                    <i data-lucide="trending-up" class="w-4 h-4 mr-2 text-blue-600"></i>
+                    Pertumbuhan Saldo
+                </h3>
+                <div class="h-[250px] md:h-[350px]"><canvas id="growthChart"></canvas></div>
+            </div>
+
+            <!-- Calendar & Distribution -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8">
+                <div class="lg:col-span-2 bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
+                    <div class="p-5 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
+                        <h3 class="font-black text-slate-800 flex items-center uppercase tracking-tight text-xs">
+                            <i data-lucide="calendar" class="w-4 h-4 mr-2 text-blue-600"></i>
+                            Kalender Trading
+                        </h3>
+                        <div class="flex items-center space-x-1">
+                            <button id="prev-month" class="p-2 hover:bg-white rounded-full transition-all active-scale"><i data-lucide="chevron-left" class="w-4 h-4"></i></button>
+                            <span id="current-month-year" class="font-bold text-slate-700 min-w-[110px] text-center text-[10px] uppercase tracking-wider">Jan 2024</span>
+                            <button id="next-month" class="p-2 hover:bg-white rounded-full transition-all active-scale"><i data-lucide="chevron-right" class="w-4 h-4"></i></button>
+                        </div>
+                    </div>
+                    <div class="calendar-grid text-[9px] font-black text-slate-400 uppercase text-center py-2 bg-slate-50/30">
+                        <div>Sen</div><div>Sel</div><div>Rab</div><div>Kam</div><div>Jum</div><div>Sab</div><div>Min</div>
+                    </div>
+                    <div id="calendar-body" class="calendar-grid"></div>
+                </div>
+
+                <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm flex flex-col items-center">
+                    <h3 class="w-full font-black text-slate-800 flex items-center uppercase tracking-tight text-xs mb-6">
+                        <i data-lucide="pie-chart" class="w-4 h-4 mr-2 text-blue-600"></i>
+                        Performa Trade
+                    </h3>
+                    <div class="h-[220px] w-full flex justify-center"><canvas id="profileChart"></canvas></div>
+                </div>
+            </div>
+
+            <!-- Trade History -->
+            <div class="space-y-4">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                    <h2 class="font-black text-slate-800 uppercase tracking-tight text-lg">Riwayat Transaksi</h2>
+                    <div class="w-full md:w-auto flex items-center bg-white px-4 py-3 rounded-2xl border border-slate-200 shadow-sm focus-within:ring-2 focus-within:ring-blue-500 transition-all">
+                        <i data-lucide="search" class="w-4 h-4 text-slate-400 mr-2"></i>
+                        <input type="text" id="trade-search" class="bg-transparent border-none outline-none text-sm w-full md:w-48" placeholder="Cari Pair/Strategi...">
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden min-h-[200px]">
+                    <!-- Desktop Table -->
+                    <div class="hidden md:block overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead class="bg-slate-50 text-slate-400 text-[10px] font-black uppercase tracking-widest border-b border-slate-100">
+                                <tr>
+                                    <th class="px-6 py-4">Waktu</th>
+                                    <th class="px-6 py-4">Aset</th>
+                                    <th class="px-6 py-4">Setup</th>
+                                    <th class="px-6 py-4">Side</th>
+                                    <th class="px-6 py-4 text-right">Profit/Loss</th>
+                                    <th class="px-6 py-4 text-center">RR</th>
+                                    <th class="px-6 py-4 text-center">Mood</th>
+                                    <th class="px-6 py-4 text-right">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="trades-list-desktop" class="divide-y divide-slate-50 text-sm text-slate-700">
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Mobile Cards List -->
+                    <div id="trades-list-mobile" class="md:hidden divide-y divide-slate-50">
+                    </div>
+
+                    <!-- Empty State -->
+                    <div id="empty-state" class="py-20 flex flex-col items-center justify-center text-slate-400 hidden">
+                        <i data-lucide="inbox" class="w-12 h-12 mb-4 opacity-10"></i>
+                        <p class="font-bold text-sm">Belum ada data trading</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- FAB -->
+    <button id="fab-add" class="hidden fixed bottom-6 right-6 w-16 h-16 bg-blue-600 text-white rounded-full shadow-2xl flex items-center justify-center z-50 active-scale shadow-blue-300 transition-all hover:bg-blue-700">
+        <i data-lucide="plus" class="w-8 h-8"></i>
+    </button>
+
+    <!-- Modal Form Input -->
+    <div id="modal-form" class="hidden fixed inset-0 z-[60] flex items-end md:items-center justify-center p-0 md:p-4">
+        <div class="modal-overlay absolute inset-0"></div>
+        <div class="bg-white w-full max-w-lg rounded-t-[2.5rem] md:rounded-[2.5rem] p-6 md:p-8 relative z-10 shadow-2xl animate-slide-up md:animate-fade-in overflow-y-auto max-h-[90vh]">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="font-black text-slate-800 uppercase tracking-tight flex items-center">
+                    <i data-lucide="plus-circle" class="w-5 h-5 mr-2 text-blue-600"></i>
+                    Input Trade Baru
+                </h2>
+                <button id="close-modal" class="p-2 hover:bg-slate-100 rounded-full transition-all active-scale text-slate-400">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+
+            <form id="trade-form" class="space-y-5">
+                <div class="space-y-1">
+                    <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 text-xs">Pair / Aset</label>
+                    <input type="text" id="asset" required class="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none uppercase font-bold" placeholder="E.g. XAUUSD">
+                </div>
+                
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="space-y-1">
+                        <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 text-xs">Tipe Setup</label>
+                        <select id="setup" class="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none font-bold">
+                            <option value="Breakout">🔥 BREAKOUT</option>
+                            <option value="Retest">🔄 RETEST</option>
+                            <option value="Pullback">📉 PULLBACK</option>
+                            <option value="Scalping">⚡ SCALPING</option>
+                            <option value="Trend Follow">📈 TREND FOLLOW</option>
+                        </select>
+                    </div>
+                    <div class="space-y-1">
+                        <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 text-xs">Side</label>
+                        <select id="type" class="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none font-bold">
+                            <option value="Long">BUY / LONG</option>
+                            <option value="Short">SELL / SHORT</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="space-y-1">
+                        <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 text-xs">Hasil</label>
+                        <select id="outcome" class="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none font-bold">
+                            <option value="Profit">WIN ✅</option>
+                            <option value="Loss">LOSS ❌</option>
+                            <option value="BE">B.E ⚖️</option>
+                        </select>
+                    </div>
+                    <div class="space-y-1">
+                        <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 text-xs">Mood Psikologi</label>
+                        <select id="mood" class="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none font-bold">
+                            <option value="Calm">🧘 KALEM</option>
+                            <option value="Patient">⏳ BERSABAR</option>
+                            <option value="Greedy">🤑🤭 RAKUS JIR</option>
+                            <option value="Fear">😨 KETAKUAN</option>
+                            <option value="FOMO">🏃 FOMO</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="space-y-1">
+                        <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 text-xs">Net P/L</label>
+                        <input type="number" step="1" id="amount" required class="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none font-bold" placeholder="100">
+                    </div>
+                    <div class="space-y-1">
+                        <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 text-xs">RR Achieved</label>
+                        <input type="number" step="0.1" id="rr" required class="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none font-bold" placeholder="1.5">
+                    </div>
+                </div>
+
+                <!-- Recommended Feature: Discipline Checklist -->
+                <div class="space-y-3 p-4 bg-slate-50 rounded-2xl border border-slate-100">
+                    <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block">Discipline Checklist</label>
+                    <div class="flex items-center space-x-3">
+                        <input type="checkbox" id="check-setup" class="w-4 h-4 text-blue-600 rounded">
+                        <label for="check-setup" class="text-xs font-medium text-slate-600">Setup sesuai strategi?</label>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <input type="checkbox" id="check-risk" class="w-4 h-4 text-blue-600 rounded">
+                        <label for="check-risk" class="text-xs font-medium text-slate-600">Risiko sudah diatur?</label>
+                    </div>
+                </div>
+
+                <div class="space-y-1">
+                    <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 text-xs">Catatan Tambahan</label>
+                    <input type="text" id="strategy" class="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none" placeholder="E.g. Konfluensi EMA 200">
+                </div>
+
+                <button type="submit" id="submit-trade-btn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-black py-5 rounded-2xl transition-all shadow-xl shadow-blue-50 active-scale uppercase tracking-wider text-xs mt-4">
+                    Simpan Transaksi
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Settings & Profile -->
+    <div id="modal-settings" class="hidden fixed inset-0 z-[65] flex items-center justify-center p-4">
+        <div class="modal-overlay absolute inset-0 bg-slate-900/40 backdrop-blur-sm"></div>
+        <div class="bg-white w-full max-w-md rounded-[2.5rem] p-8 relative z-10 shadow-2xl animate-fade-in">
+            <div class="flex justify-between items-center mb-8">
+                <h2 class="text-xl font-black text-slate-800 uppercase tracking-tight">Pengaturan</h2>
+                <button id="close-settings" class="p-2 hover:bg-slate-100 rounded-full transition-all active-scale text-slate-400">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+
+            <div class="space-y-6">
+                <!-- Profile Section -->
+                <div class="flex items-center space-x-4 p-4 bg-slate-50 rounded-3xl border border-slate-100">
+                    <div class="w-12 h-12 bg-blue-600 rounded-2xl flex items-center justify-center text-white font-black text-xl">
+                        <i data-lucide="user" class="w-6 h-6"></i>
+                    </div>
+                    <div>
+                        <p class="text-xs font-black text-slate-400 uppercase tracking-widest">Active User</p>
+                        <p id="profile-email" class="text-sm font-bold text-slate-800 truncate max-w-[200px]"></p>
+                    </div>
+                </div>
+
+                <!-- Currency Selection -->
+                <div class="space-y-2">
+                    <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Mata Uang</label>
+                    <select id="currency-select" class="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none font-bold">
+                        <option value="IDR">🇮🇩 IDR (Rupiah)</option>
+                        <option value="USD">🇺🇸 USD (Dollar)</option>
+                        <option value="EUR">🇪🇺 EUR (Euro)</option>
+                        <option value="JPY">🇯🇵 JPY (Yen)</option>
+                    </select>
+                </div>
+
+                <!-- Monthly Target Setting -->
+                <div class="space-y-2">
+                    <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Target Profit Bulanan</label>
+                    <input type="number" id="target-input" class="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none font-bold" placeholder="E.g. 5000000">
+                </div>
+
+                <!-- About Section -->
+                <div class="pt-6 border-t border-slate-100 text-center">
+                    <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Dibuat oleh Jackie</p>
+                    <div class="flex justify-center space-x-4">
+                        <a href="https://www.facebook.com/jakijekijuki" target="_blank" class="p-3 bg-blue-50 text-blue-600 rounded-2xl hover:bg-blue-600 hover:text-white transition-all">
+                            <i data-lucide="facebook" class="w-5 h-5"></i>
+                        </a>
+                        <a href="https://www.instagram.com/jakijekiiii?igsh=MThpaW8ybThid3Zoaw==" target="_blank" class="p-3 bg-pink-50 text-pink-600 rounded-2xl hover:bg-pink-600 hover:text-white transition-all">
+                            <i data-lucide="instagram" class="w-5 h-5"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Konfirmasi Hapus -->
+    <div id="modal-delete" class="hidden fixed inset-0 z-[70] flex items-center justify-center p-4">
+        <div class="modal-overlay absolute inset-0 bg-slate-900/40 backdrop-blur-sm"></div>
+        <div class="bg-white w-full max-w-sm rounded-[2rem] p-8 relative z-10 shadow-2xl animate-fade-in text-center">
+            <div class="flex justify-center mb-6">
+                <div class="p-4 bg-red-50 text-red-600 rounded-2xl">
+                    <i data-lucide="trash-2" class="w-10 h-10"></i>
+                </div>
+            </div>
+            <h2 class="text-xl font-black text-slate-800 mb-2 uppercase tracking-tight">Hapus Riwayat?</h2>
+            <p class="text-slate-500 text-sm mb-8">Tindakan ini tidak dapat dibatalkan.</p>
+            
+            <div class="grid grid-cols-2 gap-3">
+                <button id="cancel-delete" class="py-4 px-6 bg-slate-100 text-slate-600 font-bold rounded-2xl transition-all hover:bg-slate-200 active-scale uppercase text-xs tracking-widest">
+                    Batal
+                </button>
+                <button id="confirm-delete" class="py-4 px-6 bg-red-600 text-white font-black rounded-2xl transition-all hover:bg-red-700 shadow-lg shadow-red-100 active-scale uppercase text-xs tracking-widest">
+                    Ya, Hapus
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toast-container" class="fixed top-6 left-1/2 -translate-x-1/2 z-[100] w-[90%] max-w-xs space-y-2 pointer-events-none"></div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
+        import { getFirestore, collection, addDoc, onSnapshot, doc, deleteDoc, setDoc, getDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
+
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyCFKB98S5KODJQBMl7aa-ZmpFmj1iAqnu0",
+            authDomain: "trade-journal-504bc.firebaseapp.com",
+            projectId: "trade-journal-504bc",
+            storageBucket: "trade-journal-504bc.firebasestorage.app",
+            messagingSenderId: "291564205714",
+            appId: "1:291564205714:web:30dc11c3c722382c63d84b",
+            measurementId: "G-WKVQ7FCH8H"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const appId = "trade-journal-504bc";
+
+        let currentUser = null;
+        let isLoginMode = true;
+        let growthChart = null;
+        let profileChart = null;
+        let currentCalendarDate = new Date();
+        let allTrades = [];
+        let tradeIdToDelete = null;
+        let userSettings = { currency: 'USD', monthlyTarget: 0 };
+
+        const refreshIcons = () => window.lucide && window.lucide.createIcons();
+        
+        const formatNum = (num) => {
+            return new Intl.NumberFormat('id-ID', {
+                style: 'currency',
+                currency: userSettings.currency,
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0,
+            }).format(num);
+        };
+
+        const showToast = (msg, type = 'success') => {
+            const toast = document.createElement('div');
+            toast.className = `p-4 rounded-2xl shadow-xl flex items-center space-x-3 animate-fade-in pointer-events-auto border ${type === 'success' ? 'bg-slate-900 border-slate-700 text-white' : 'bg-red-600 border-red-500 text-white'}`;
+            toast.innerHTML = `<i data-lucide="${type === 'success' ? 'check-circle' : 'alert-circle'}" class="w-5 h-5"></i><span class="font-bold text-xs">${msg}</span>`;
+            document.getElementById('toast-container').appendChild(toast);
+            refreshIcons();
+            setTimeout(() => { if(toast) toast.remove(); }, 3000);
+        };
+
+        // Auth Logic
+        document.getElementById('auth-toggle-btn').addEventListener('click', () => {
+            isLoginMode = !isLoginMode;
+            document.getElementById('auth-title').textContent = isLoginMode ? 'TradeLog Pro' : 'Daftar Baru';
+            document.getElementById('auth-submit-btn').textContent = isLoginMode ? 'Masuk Sekarang' : 'Daftar Sekarang';
+            document.getElementById('auth-toggle-btn').textContent = isLoginMode ? 'Daftar Akun' : 'Sudah punya akun?';
+        });
+
+        document.getElementById('auth-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            try {
+                if (isLoginMode) await signInWithEmailAndPassword(auth, email, password);
+                else await createUserWithEmailAndPassword(auth, email, password);
+            } catch (err) { showToast(err.message, 'error'); }
+        });
+
+        document.getElementById('logout-btn').addEventListener('click', () => signOut(auth));
+
+        onAuthStateChanged(auth, async (user) => {
+            const fab = document.getElementById('fab-add');
+            if (user) {
+                currentUser = user;
+                document.getElementById('auth-view').classList.add('force-hidden');
+                document.getElementById('app-view').classList.remove('hidden');
+                document.getElementById('profile-email').textContent = user.email;
+                fab.classList.remove('hidden');
+                
+                // Load Settings
+                const settingsSnap = await getDoc(doc(db, 'artifacts', appId, 'users', user.uid, 'settings', 'user_config'));
+                if (settingsSnap.exists()) {
+                    userSettings = settingsSnap.data();
+                    document.getElementById('currency-select').value = userSettings.currency;
+                    document.getElementById('target-input').value = userSettings.monthlyTarget;
+                }
+                
+                initData(user.uid);
+            } else {
+                currentUser = null;
+                document.getElementById('app-view').classList.add('hidden');
+                document.getElementById('auth-view').classList.remove('force-hidden');
+                fab.classList.add('hidden');
+            }
+            refreshIcons();
+        });
+
+        // Modal Handlers
+        const toggleModal = (id, show) => {
+            const el = document.getElementById(id);
+            el.classList.toggle('hidden', !show);
+            document.body.style.overflow = show ? 'hidden' : 'auto';
+            refreshIcons();
+        };
+
+        document.getElementById('fab-add').addEventListener('click', () => toggleModal('modal-form', true));
+        document.getElementById('close-modal').addEventListener('click', () => toggleModal('modal-form', false));
+        document.querySelector('#modal-form .modal-overlay').addEventListener('click', () => toggleModal('modal-form', false));
+
+        document.getElementById('settings-btn').addEventListener('click', () => toggleModal('modal-settings', true));
+        document.getElementById('close-settings').addEventListener('click', () => toggleModal('modal-settings', false));
+        document.querySelector('#modal-settings .modal-overlay').addEventListener('click', () => toggleModal('modal-settings', false));
+
+        document.getElementById('cancel-delete').addEventListener('click', () => toggleModal('modal-delete', false));
+        document.getElementById('confirm-delete').addEventListener('click', async () => {
+            if (tradeIdToDelete && currentUser) {
+                await deleteDoc(doc(db, 'artifacts', appId, 'users', currentUser.uid, 'trades', tradeIdToDelete));
+                showToast('Trade berhasil dihapus');
+                toggleModal('modal-delete', false);
+            }
+        });
+
+        // Settings Logic
+        const saveSettings = async () => {
+            if (!currentUser) return;
+            userSettings.currency = document.getElementById('currency-select').value;
+            userSettings.monthlyTarget = parseFloat(document.getElementById('target-input').value) || 0;
+            await setDoc(doc(db, 'artifacts', appId, 'users', currentUser.uid, 'settings', 'user_config'), userSettings);
+            filterAndRender(); // Re-render with new settings
+        };
+
+        document.getElementById('currency-select').addEventListener('change', saveSettings);
+        document.getElementById('target-input').addEventListener('input', saveSettings);
+
+        // Data Logic
+        function initData(userId) {
+            const colRef = collection(db, 'artifacts', appId, 'users', userId, 'trades');
+            onSnapshot(colRef, (snap) => {
+                const trades = [];
+                snap.forEach(d => trades.push({ id: d.id, ...d.data() }));
+                trades.sort((a, b) => (a.createdAt?.seconds || 0) - (b.createdAt?.seconds || 0));
+                allTrades = trades;
+                filterAndRender();
+            });
+        }
+
+        document.getElementById('trade-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if (!currentUser) return;
+            try {
+                const tradeData = {
+                    asset: document.getElementById('asset').value.toUpperCase(),
+                    setup: document.getElementById('setup').value,
+                    type: document.getElementById('type').value,
+                    outcome: document.getElementById('outcome').value,
+                    mood: document.getElementById('mood').value,
+                    amount: parseFloat(document.getElementById('amount').value),
+                    rr: parseFloat(document.getElementById('rr').value),
+                    strategy: document.getElementById('strategy').value || 'Tanpa Catatan',
+                    createdAt: serverTimestamp()
+                };
+                await addDoc(collection(db, 'artifacts', appId, 'users', currentUser.uid, 'trades'), tradeData);
+                e.target.reset();
+                toggleModal('modal-form', false);
+                showToast('Transaksi berhasil disimpan!');
+            } catch (err) { showToast('Gagal: ' + err.message, 'error'); }
+        });
+
+        window.deleteTrade = (id) => {
+            tradeIdToDelete = id;
+            toggleModal('modal-delete', true);
+        };
+
+        document.getElementById('trade-search').addEventListener('input', filterAndRender);
+
+        function filterAndRender() {
+            const q = document.getElementById('trade-search').value.toLowerCase();
+            const filtered = allTrades.filter(t => 
+                (t.asset || "").toLowerCase().includes(q) || 
+                (t.strategy || "").toLowerCase().includes(q) ||
+                (t.setup || "").toLowerCase().includes(q)
+            );
+            const displayData = [...filtered].sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
+            
+            renderDesktopTable(displayData);
+            renderMobileCards(displayData);
+            updateAnalytics(filtered);
+            renderCharts(filtered);
+            renderCalendar(filtered);
+            updateTargetUI(filtered);
+            
+            document.getElementById('empty-state').classList.toggle('hidden', displayData.length > 0);
+        }
+
+        function updateTargetUI(trades) {
+            const now = new Date();
+            const monthlyProfit = trades.filter(t => {
+                const d = new Date(t.createdAt?.seconds * 1000);
+                return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+            }).reduce((acc, t) => acc + (t.outcome === 'Profit' ? t.amount : (t.outcome === 'Loss' ? -t.amount : 0)), 0);
+
+            const progress = userSettings.monthlyTarget > 0 ? Math.min(100, Math.max(0, (monthlyProfit / userSettings.monthlyTarget) * 100)) : 0;
+            document.getElementById('target-progress').style.width = `${progress}%`;
+            document.getElementById('target-percentage').textContent = `${progress.toFixed(0)}%`;
+            document.getElementById('target-current').textContent = formatNum(monthlyProfit);
+            document.getElementById('target-goal').textContent = `Goal: ${formatNum(userSettings.monthlyTarget)}`;
+        }
+
+        function renderDesktopTable(trades) {
+            const list = document.getElementById('trades-list-desktop');
+            if (!list) return;
+            list.innerHTML = '';
+            trades.forEach(t => {
+                const date = t.createdAt ? new Date(t.createdAt.seconds * 1000).toLocaleDateString('id-ID') : '...';
+                const resColor = t.outcome === 'Profit' ? 'text-green-600' : (t.outcome === 'Loss' ? 'text-red-600' : 'text-slate-500');
+                const sign = t.outcome === 'Profit' ? '+' : (t.outcome === 'Loss' ? '-' : '');
+                const moodEmoji = { 'Calm': '🧘', 'Patient': '⏳', 'Greedy': '🤑', 'Fear': '😨', 'FOMO': '🏃' };
+                const setupEmoji = { 'Breakout': '🔥', 'Retest': '🔄', 'Pullback': '📉', 'Scalping': '⚡', 'Trend Follow': '📈' };
+                const row = document.createElement('tr');
+                row.className = 'hover:bg-slate-50 transition-all border-b border-slate-50';
+                row.innerHTML = `
+                    <td class="px-6 py-4 text-[10px] font-mono text-slate-400">${date}</td>
+                    <td class="px-6 py-4 font-black text-slate-800">${t.asset}</td>
+                    <td class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-tighter">${setupEmoji[t.setup] || ''} ${t.setup || 'N/A'}</td>
+                    <td class="px-6 py-4"><span class="px-2 py-1 rounded-md text-[9px] font-black uppercase ${t.type === 'Long' ? 'bg-blue-100 text-blue-700' : 'bg-orange-100 text-orange-700'}">${t.type}</span></td>
+                    <td class="px-6 py-4 font-black text-right ${resColor}">${sign}${formatNum(Math.abs(t.amount || 0))}</td>
+                    <td class="px-6 py-4 text-slate-500 font-bold text-center">1:${t.rr || 0}</td>
+                    <td class="px-6 py-4 text-center text-lg" title="${t.mood}">${moodEmoji[t.mood] || '😐'}</td>
+                    <td class="px-6 py-4 text-right">
+                        <button onclick="deleteTrade('${t.id}')" class="p-2 text-slate-300 hover:text-red-500 rounded-lg transition-colors"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                    </td>
+                `;
+                list.appendChild(row);
+            });
+            refreshIcons();
+        }
+
+        function renderMobileCards(trades) {
+            const list = document.getElementById('trades-list-mobile');
+            if (!list) return;
+            list.innerHTML = '';
+            trades.forEach(t => {
+                const date = t.createdAt ? new Date(t.createdAt.seconds * 1000).toLocaleDateString('id-ID') : '...';
+                const color = t.outcome === 'Profit' ? 'text-green-600' : (t.outcome === 'Loss' ? 'text-red-600' : 'text-slate-500');
+                const sign = t.outcome === 'Profit' ? '+' : (t.outcome === 'Loss' ? '-' : '');
+                const moodEmoji = { 'Calm': '🧘', 'Patient': '⏳', 'Greedy': '🤑', 'Fear': '😨', 'FOMO': '🏃' };
+                const card = document.createElement('div');
+                card.className = 'p-5 flex justify-between items-center active:bg-slate-50 transition-colors';
+                card.innerHTML = `
+                    <div class="space-y-1">
+                        <div class="flex items-center space-x-2">
+                            <span class="font-black text-slate-800 text-sm">${t.asset}</span>
+                            <span class="text-[9px] font-black uppercase px-1.5 py-0.5 rounded ${t.type === 'Long' ? 'bg-blue-100 text-blue-700' : 'bg-orange-100 text-orange-700'}">${t.type}</span>
+                            <span class="text-xs">${moodEmoji[t.mood] || ''}</span>
+                        </div>
+                        <div class="text-[9px] text-slate-400 font-medium">${date} • ${t.setup || ''}</div>
+                    </div>
+                    <div class="text-right space-y-1">
+                        <div class="font-black text-sm ${color}">${sign}${formatNum(Math.abs(t.amount || 0))}</div>
+                        <div class="flex justify-end items-center space-x-3">
+                            <span class="text-[10px] font-bold text-slate-400">1:${t.rr || 0}</span>
+                            <button onclick="deleteTrade('${t.id}')" class="text-slate-300 active:text-red-500"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                        </div>
+                    </div>
+                `;
+                list.appendChild(card);
+            });
+            refreshIcons();
+        }
+
+        function updateAnalytics(trades) {
+            let profit = 0, wins = 0, grossP = 0, grossL = 0;
+            trades.forEach(t => {
+                const amt = t.amount || 0;
+                if (t.outcome === 'Profit') { profit += amt; grossP += amt; wins++; }
+                else if (t.outcome === 'Loss') { profit -= amt; grossL += amt; }
+            });
+            const pf = grossL > 0 ? (grossP / grossL).toFixed(2) : grossP.toFixed(2);
+            document.getElementById('stat-total').textContent = trades.length;
+            const pEl = document.getElementById('stat-profit');
+            pEl.textContent = (profit >= 0 ? '+' : '-') + formatNum(Math.abs(profit));
+            pEl.className = `text-2xl md:text-3xl font-black ${profit >= 0 ? 'text-green-600' : 'text-red-600'}`;
+            document.getElementById('stat-winrate').textContent = (trades.length > 0 ? (wins / trades.length * 100).toFixed(1) : 0) + '%';
+            document.getElementById('stat-pf').textContent = pf;
+        }
+
+        function renderCharts(trades) {
+            let bal = 0;
+            const growthData = trades.map(t => {
+                bal += (t.outcome === 'Profit' ? t.amount : (t.outcome === 'Loss' ? -t.amount : 0));
+                return bal;
+            });
+            if (growthChart) growthChart.destroy();
+            const gCtx = document.getElementById('growthChart').getContext('2d');
+            growthChart = new Chart(gCtx, {
+                type: 'line',
+                data: {
+                    labels: trades.map((_, i) => i + 1),
+                    datasets: [{
+                        data: growthData,
+                        borderColor: '#2563eb',
+                        backgroundColor: 'rgba(37, 99, 235, 0.1)',
+                        fill: true, tension: 0.4, borderWidth: 4, pointRadius: 0
+                    }]
+                },
+                options: { 
+                    responsive: true, maintainAspectRatio: false, 
+                    plugins: { legend: { display: false } }, 
+                    scales: { y: { grid: { color: '#f1f5f9' }, ticks: { font: { size: 10, weight: 'bold' } } }, x: { display: false } } 
+                }
+            });
+            const outcomes = { Profit: 0, Loss: 0, BE: 0 };
+            trades.forEach(t => outcomes[t.outcome]++);
+            if (profileChart) profileChart.destroy();
+            profileChart = new Chart(document.getElementById('profileChart'), {
+                type: 'doughnut',
+                data: {
+                    labels: ['Win', 'Loss', 'BE'],
+                    datasets: [{ data: [outcomes.Profit, outcomes.Loss, outcomes.BE], backgroundColor: ['#22c55e', '#ef4444', '#94a3b8'], borderWidth: 10, borderColor: '#fff' }]
+                },
+                options: { responsive: true, maintainAspectRatio: false, cutout: '80%', plugins: { legend: { position: 'bottom', labels: { font: { size: 10, weight: 'bold' } } } } }
+            });
+        }
+
+        function renderCalendar(trades) {
+            const year = currentCalendarDate.getFullYear();
+            const month = currentCalendarDate.getMonth();
+            const names = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"];
+            document.getElementById('current-month-year').textContent = `${names[month]} ${year}`;
+            const first = new Date(year, month, 1).getDay();
+            const adjFirst = first === 0 ? 6 : first - 1;
+            const days = new Date(year, month + 1, 0).getDate();
+            const daily = {};
+            trades.forEach(t => {
+                if (!t.createdAt) return;
+                const d = new Date(t.createdAt.seconds * 1000);
+                if (d.getMonth() === month && d.getFullYear() === year) {
+                    const k = d.getDate();
+                    daily[k] = (daily[k] || 0) + (t.outcome === 'Profit' ? t.amount : (t.outcome === 'Loss' ? -t.amount : 0));
+                }
+            });
+            const body = document.getElementById('calendar-body');
+            body.innerHTML = '';
+            for (let i = 0; i < adjFirst; i++) body.innerHTML += `<div class="bg-slate-50/50"></div>`;
+            for (let d = 1; d <= days; d++) {
+                const pl = daily[d] || 0;
+                const color = pl > 0 ? 'bg-green-50 text-green-600' : (pl < 0 ? 'bg-red-50 text-red-600' : 'text-slate-300');
+                body.innerHTML += `
+                    <div class="calendar-day ${pl !== 0 ? color : ''} border-slate-50">
+                        <span class="text-[9px] font-black text-slate-400">${d}</span>
+                        ${pl !== 0 ? `<span class="text-[8px] font-black self-end truncate">${pl > 0 ? '+' : '-'}${Math.abs(Math.round(pl))}</span>` : ''}
+                    </div>
+                `;
+            }
+        }
+
+        document.getElementById('prev-month').addEventListener('click', () => { currentCalendarDate.setMonth(currentCalendarDate.getMonth() - 1); filterAndRender(); });
+        document.getElementById('next-month').addEventListener('click', () => { currentCalendarDate.setMonth(currentCalendarDate.getMonth() + 1); filterAndRender(); });
+
+        refreshIcons();
+    </script>
+</body>
+</html>
