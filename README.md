@@ -1,7 +1,5 @@
 # 📈 TradeLogPro
 
-![TradeLogPro Banner](https://via.placeholder.com/1200x400.png?text=TradeLogPro+Trading+Journal+App)
-
 ## 🚀 Overview
 
 **TradeLogPro** is a premium, high-performance trading journal application designed for professional traders. Built with a "Pro Max" design philosophy, it features a stunning glassmorphism UI, real-time analytics, and a seamless mobile-first experience.
