@@ -1,73 +1,104 @@
-# React + TypeScript + Vite
+# 📈 TradeLogPro
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+![TradeLogPro Banner](https://via.placeholder.com/1200x400.png?text=TradeLogPro+Trading+Journal+App)
 
-Currently, two official plugins are available:
+## 🚀 Overview
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+**TradeLogPro** is a premium, high-performance trading journal application designed for professional traders. Built with a "Pro Max" design philosophy, it features a stunning glassmorphism UI, real-time analytics, and a seamless mobile-first experience.
 
-## React Compiler
+This application helps traders track their performance, analyze setups, and maintain discipline through an intuitive and focused interface.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## ✨ Key Features
 
-## Expanding the ESLint configuration
+- **💎 Premium "Pro Max" UI**: Dark-themed, glassmorphism design with fluid animations and micro-interactions.
+- **📊 Advanced Analytics**:
+  - Real-time P/L tracking (Day, Week, Month).
+  - Win Rate visualizers.
+  - Capital Growth Charts.
+- **📱 Mobile-First Architecture**:
+  - Responsive layouts with a specialized mobile Bottom Navigation.
+  - Native-like touch interactions and modal transitions.
+  - PWA-ready design.
+- **📅 Interactive Calendar**: Heatmap-style trading calendar to visualize daily performance consistency.
+- **📝 Comprehensive Trade Logging**:
+  - Detailed entry for pairs, setups, risks, and psychological mood.
+  - Discipline checklist for every trade.
+- **☁️ Cloud Sync**: Real-time data synchronization using Firebase Firestore.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## 🛠️ Technology Stack
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- **Frontend Core**: [React](https://reactjs.org/) (v18), [TypeScript](https://www.typescriptlang.org/)
+- **Build Tool**: [Vite](https://vitejs.dev/)
+- **Styling**: [Tailwind CSS](https://tailwindcss.com/) (Custom Config)
+- **Icons**: [Lucide React](https://lucide.dev/)
+- **Charts**: [Chart.js](https://www.chartjs.org/) via `react-chartjs-2`
+- **Backend / Database**: [Firebase](https://firebase.google.com/) (Firestore & Auth)
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+## ⚡ Getting Started
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### Prerequisites
+
+- Node.js (v18 or higher)
+- npm or yarn
+
+### Installation
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/yourusername/tradelogpro.git
+   cd tradelogpro
+   ```
+
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Configure Environment**
+   Create a `.env` file in the root directory and add your Firebase configuration:
+   ```env
+   VITE_FIREBASE_API_KEY=your_api_key
+   VITE_FIREBASE_AUTH_DOMAIN=your_project.firebaseapp.com
+   VITE_FIREBASE_PROJECT_ID=your_project_id
+   VITE_FIREBASE_STORAGE_BUCKET=your_storage_bucket
+   VITE_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
+   VITE_FIREBASE_APP_ID=your_app_id
+   ```
+
+4. **Run the development server**
+   ```bash
+   npm run dev
+   ```
+
+## 📂 Project Structure
+
+```
+src/
+├── components/       # Reusable UI components
+│   ├── Auth/         # Authentication forms
+│   ├── Calendar/     # Trading calendar & heatmap
+│   ├── Charts/       # Analytics charts
+│   ├── Common/       # Modals, Buttons, Inputs
+│   ├── Dashboard/    # Stats cards, Progress bars
+│   ├── Layout/       # Sidebar, BottomNav, Main Layout
+│   └── Trades/       # Trade lists, Forms, Input logic
+├── context/          # React Context (Auth, Theme)
+├── lib/              # Firebase configuration
+├── types/            # TypeScript interfaces
+└── utils/            # Helper functions
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## 🤝 Contributing
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+Contributions are welcome! Please feel free to submit a Pull Request.
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+---
+
+<center>
+  <p>Made with ❤️ by <b>Jackie</b></p>
+  <p><i>"Consistency is the key to trading mastery."</i></p>
+</center>
