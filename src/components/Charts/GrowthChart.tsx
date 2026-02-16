@@ -90,7 +90,7 @@ export const GrowthChart: React.FC<GrowthChartProps> = ({ trades }) => {
 
     return (
         <div className="w-full h-[300px] md:h-[400px] bg-slate-900 p-4 rounded-3xl border border-white/5 relative overflow-hidden">
-            <div className="absolute top-6 left-6 z-10">
+            <div className="mb-4">
                 <h3 className="text-white font-black text-lg tracking-tight">Portfolio Growth</h3>
                 <p className="text-slate-500 text-xs font-bold uppercase tracking-widest">Performance Curve</p>
             </div>

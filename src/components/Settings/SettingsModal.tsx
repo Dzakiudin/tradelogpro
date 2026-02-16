@@ -44,7 +44,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, s
             title="Pengaturan"
             icon={<User className="w-5 h-5" />}
         >
-            <div className="space-y-6">
+            <div className="space-y-6 pb-24">
                 <div className="flex items-center space-x-4 p-4 bg-background rounded-3xl border border-white/5">
                     <div className="w-12 h-12 bg-gradient-to-tr from-primary to-secondary rounded-2xl flex items-center justify-center text-white font-black text-xl shadow-lg shadow-primary/20">
                         <User className="w-6 h-6" />

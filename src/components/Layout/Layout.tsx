@@ -1,4 +1,5 @@
 import React from 'react';
+import { Plus } from 'lucide-react';
 import { Sidebar } from './Sidebar';
 import { BottomNav } from './BottomNav';
 
@@ -34,7 +35,7 @@ export const Layout: React.FC<LayoutProps> = ({ children, activeTab, setActiveTa
             <main className="relative z-10 lg:pl-72 min-h-screen pb-24 lg:pb-0 transition-all duration-300">
                 <div className="max-w-7xl mx-auto p-4 md:p-8 lg:p-10 space-y-8 animate-fade-in">
                     {/* Mobile Header (active tab title) */}
-                    <div className="lg:hidden flex items-center justify-between mb-6 sticky top-0 bg-background/80 backdrop-blur-xl p-4 -mx-4 z-40 border-b border-white/5">
+                    <div className="lg:hidden flex items-center justify-between mb-6 sticky top-0 bg-background/80 backdrop-blur-xl p-4 -mx-4 -mt-4 z-40 border-b border-white/5">
                         <h1 className="text-xl font-black tracking-tight text-white capitalize">{activeTab}</h1>
                         <button onClick={onOpenSettings} className="p-2 bg-surface rounded-full text-slate-400">
                             <div className="w-6 h-6 rounded-full bg-gradient-to-tr from-emerald-400 to-cyan-400"></div>
@@ -44,6 +45,15 @@ export const Layout: React.FC<LayoutProps> = ({ children, activeTab, setActiveTa
                     {children}
                 </div>
             </main>
+
+            {/* Desktop Global Floating Add Button */}
+            <button
+                onClick={onOpenTradeModal}
+                className="hidden md:flex fixed bottom-12 right-12 z-50 w-16 h-16 bg-primary hover:bg-primary-dark rounded-full items-center justify-center text-white shadow-2xl shadow-primary/40 hover:scale-110 active:scale-95 transition-all duration-300"
+                title="Add Trade"
+            >
+                <Plus className="w-8 h-8" />
+            </button>
 
             <BottomNav activeTab={activeTab} setActiveTab={handleTabChange} />
         </div>

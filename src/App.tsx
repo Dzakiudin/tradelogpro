@@ -81,7 +81,7 @@ function App() {
       activeTab={activeTab}
       setActiveTab={setActiveTab}
       onOpenSettings={() => setIsSettingsModalOpen(true)}
-      onOpenTradeModal={() => setIsTradeModalOpen(true)}
+      onOpenTradeModal={() => setIsTradeModalOpen(prev => !prev)}
     >
       {/* Dashboard Tab */}
       {activeTab === 'dashboard' && (
@@ -114,6 +114,7 @@ function App() {
             trades={trades}
             onDelete={handleDeleteTrade}
             currency={settings.currency}
+            onAddTrade={() => setIsTradeModalOpen(true)}
           />
         </div>
       )}

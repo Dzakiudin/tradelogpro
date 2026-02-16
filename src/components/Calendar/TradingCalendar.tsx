@@ -40,7 +40,7 @@ export const TradingCalendar: React.FC<TradingCalendarProps> = ({ trades, curren
     });
 
     return (
-        <div className="bg-slate-900 rounded-3xl border border-white/5 p-6 h-full flex flex-col">
+        <div className="bg-slate-900 rounded-3xl border border-white/5 p-6 h-fit flex flex-col">
             <div className="flex justify-between items-center mb-6">
                 <div className="flex items-center gap-3">
                     <div className="p-2 bg-indigo-500/10 rounded-xl text-indigo-400">
@@ -71,9 +71,9 @@ export const TradingCalendar: React.FC<TradingCalendarProps> = ({ trades, curren
                 ))}
             </div>
 
-            <div className="grid grid-cols-7 gap-2 flex-grow auto-rows-fr">
+            <div className="grid grid-cols-7 gap-1 md:gap-2 auto-rows-min">
                 {Array.from({ length: startDay }).map((_, i) => (
-                    <div key={`empty-${i}`} className="rounded-xl bg-white/0 border border-white/0 md:border-dashed md:border-white/5"></div>
+                    <div key={`empty-${i}`} className="rounded-xl bg-white/0 border border-white/0 aspect-square"></div>
                 ))}
 
                 {Array.from({ length: totalDays }).map((_, i) => {
@@ -93,11 +93,11 @@ export const TradingCalendar: React.FC<TradingCalendarProps> = ({ trades, curren
                     }
 
                     return (
-                        <div key={day} className={`rounded-xl border border-white/5 p-1 md:p-2 min-h-[60px] flex flex-col justify-between transition-all ${bgClass} group relative overflow-hidden`}>
+                        <div key={day} className={`rounded-xl border border-white/5 p-1 aspect-square flex flex-col justify-between transition-all ${bgClass} group relative overflow-hidden`}>
                             <span className={`text-[10px] font-bold ${textClass}`}>{day}</span>
 
                             {pl !== 0 && (
-                                <span className={`text-[9px] md:text-[10px] font-black truncate ${textClass}`}>
+                                <span className={`text-[8px] md:text-[10px] font-black truncate w-full text-center ${textClass}`}>
                                     {pl > 0 ? '+' : ''}{Math.abs(pl) >= 1000000 ? (Math.abs(pl) / 1000000).toFixed(1) + 'M' : (Math.abs(pl) >= 1000 ? (Math.abs(pl) / 1000).toFixed(0) + 'k' : Math.abs(pl))}
                                 </span>
                             )}
@@ -111,6 +111,11 @@ export const TradingCalendar: React.FC<TradingCalendarProps> = ({ trades, curren
                         </div>
                     );
                 })}
+            </div>
+
+            {/* Footer - Motivational Quote or Daily Insight */}
+            <div className="mt-8 pt-6 border-t border-white/5 text-center">
+                <p className="text-xs font-medium text-slate-500 italic">"Consistency is the key to trading mastery."</p>
             </div>
         </div>
     );

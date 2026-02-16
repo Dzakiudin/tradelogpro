@@ -64,7 +64,7 @@ export const TradeFormModal: React.FC<TradeFormModalProps> = ({ isOpen, onClose 
             title="Input Trade"
             icon={<PlusCircle className="w-6 h-6" />}
         >
-            <form onSubmit={handleSubmit} className="space-y-5">
+            <form onSubmit={handleSubmit} className="space-y-5 pb-32">
                 <div>
                     <label className={labelClasses}>Pair / Aset</label>
                     <input name="asset" required className={inputClasses} placeholder="E.g. XAUUSD" />

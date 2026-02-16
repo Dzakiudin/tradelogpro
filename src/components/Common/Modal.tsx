@@ -15,7 +15,7 @@ export const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, icon, chil
     return (
         <div className="fixed inset-0 z-[60] flex items-end md:items-center justify-center p-0 md:p-4">
             <div className="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity" onClick={onClose}></div>
-            <div className="bg-surface w-full max-w-lg rounded-t-[2.5rem] md:rounded-[2.5rem] p-6 md:p-8 relative z-10 shadow-2xl animate-fade-in overflow-y-auto max-h-[90vh] border border-white/5">
+            <div className="bg-surface w-full max-w-lg rounded-t-[2.5rem] md:rounded-[2.5rem] p-6 md:p-8 relative z-10 shadow-2xl animate-slide-in-bottom overflow-y-auto max-h-[90vh] border border-white/5 no-scrollbar">
                 <div className="flex justify-between items-center mb-8">
                     <h2 className="font-black text-white text-xl uppercase tracking-tight flex items-center gap-3">
                         <div className="p-2 bg-white/5 rounded-xl text-primary">

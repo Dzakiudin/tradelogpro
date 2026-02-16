@@ -7,6 +7,7 @@ interface TradeListProps {
     trades: Trade[];
     onDelete: (id: string) => void;
     currency: string;
+    onAddTrade?: () => void; // Keeping in interface for now to avoid breaking App.tsx if I don't update it immediately, but ideally remove.
 }
 
 export const TradeList: React.FC<TradeListProps> = ({ trades, onDelete, currency }) => {
@@ -39,7 +40,9 @@ export const TradeList: React.FC<TradeListProps> = ({ trades, onDelete, currency
     return (
         <div className="space-y-6">
             {/* Search Bar */}
-            <div className="flex items-center gap-4 bg-surface/50 backdrop-blur-xl p-2 rounded-2xl border border-white/5">
+            {/* Search Bar & Actions */}
+            {/* Search Bar & Actions */}
+            <div className="flex items-center gap-4 bg-surface/50 backdrop-blur-xl p-2 rounded-2xl border border-white/5 relative">
                 <Search className="w-5 h-5 text-slate-400 ml-3" />
                 <input
                     type="text"
@@ -48,6 +51,7 @@ export const TradeList: React.FC<TradeListProps> = ({ trades, onDelete, currency
                     onChange={(e) => setSearchTerm(e.target.value)}
                     className="bg-transparent border-none outline-none text-white overflow-hidden w-full placeholder:text-slate-500 font-medium"
                 />
+
                 <button className="p-2 bg-white/5 rounded-xl text-slate-400 hover:text-white transition-colors">
                     <Filter className="w-5 h-5" />
                 </button>

@@ -16,7 +16,7 @@ export const BottomNav: React.FC<BottomNavProps> = ({ activeTab, setActiveTab })
     ];
 
     return (
-        <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-surface/90 backdrop-blur-xl border-t border-white/10 px-6 py-2 pb-5 z-50 flex justify-between items-center shadow-2xl">
+        <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-surface/90 backdrop-blur-xl border-t border-white/10 px-6 py-2 pb-5 z-[70] flex justify-between items-center shadow-2xl">
             {menuItems.map((item) => {
                 const Icon = item.icon;
                 const isActive = activeTab === item.id;
