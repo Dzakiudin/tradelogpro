@@ -16,10 +16,10 @@ export const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, icon, chil
     return (
         <div className={centered ? "fixed inset-0 z-[60] flex items-center justify-center p-4" : "fixed inset-0 z-[60] flex items-end md:items-center justify-center p-0 md:p-4"}>
             <div className="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity" onClick={onClose}></div>
-            <div className={`bg-surface w-full max-w-lg p-6 md:p-8 relative z-10 shadow-2xl overflow-y-auto max-h-[90vh] border border-white/5 no-scrollbar ${centered ? 'rounded-[2rem]' : 'rounded-t-[2.5rem] md:rounded-[2.5rem] animate-slide-in-bottom'}`}>
+            <div className={`bg-surface-container w-full max-w-lg p-6 md:p-8 relative z-10 shadow-2xl overflow-y-auto max-h-[90vh] border-none no-scrollbar ${centered ? 'rounded-md' : 'rounded-t-md md:rounded-md animate-slide-in-bottom'}`}>
                 <div className="flex justify-between items-center mb-8">
-                    <h2 className="font-black text-white text-xl uppercase tracking-tight flex items-center gap-3">
-                        <div className="p-2 bg-white/5 rounded-xl text-primary">
+                    <h2 className="font-headline font-black text-white text-xl uppercase tracking-[0.2em] flex items-center gap-3">
+                        <div className="p-2 bg-white/5 rounded-sm text-primary">
                             {icon}
                         </div>
                         {title}

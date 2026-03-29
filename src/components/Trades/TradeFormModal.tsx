@@ -116,9 +116,9 @@ export const TradeFormModal: React.FC<TradeFormModalProps> = ({ isOpen, onClose,
         }
     };
 
-    const inputClasses = "w-full px-5 py-4 bg-background border border-white/5 rounded-2xl focus:ring-2 focus:ring-primary outline-none uppercase font-bold text-white placeholder:text-slate-600 focus:border-primary/50 transition-all";
-    const labelClasses = "text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1 mb-1 block";
-    const selectClasses = "w-full px-5 py-4 bg-background border border-white/5 rounded-2xl focus:ring-2 focus:ring-primary outline-none font-bold text-white appearance-none cursor-pointer";
+    const inputClasses = "w-full px-5 py-4 bg-surface-container-highest border-none rounded-sm focus:ring-1 focus:ring-primary outline-none font-headline font-bold text-lg text-white placeholder:text-slate-600 transition-all shadow-inner";
+    const labelClasses = "text-[10px] font-label font-bold text-slate-500 uppercase tracking-widest block mb-2";
+    const selectClasses = "w-full px-5 py-4 bg-surface-container-highest border-none rounded-sm focus:ring-1 focus:ring-primary outline-none font-headline font-bold text-sm text-white appearance-none cursor-pointer transition-all shadow-inner";
 
     return (
         <Modal
@@ -244,7 +244,7 @@ export const TradeFormModal: React.FC<TradeFormModalProps> = ({ isOpen, onClose,
                         </select>
                     </div>
 
-                    <div className="space-y-3 p-4 bg-background rounded-2xl border border-white/5">
+                    <div className="space-y-3 p-4 bg-surface-container-low rounded-sm border-none shadow-sm">
                         <label className={labelClasses}>Discipline Checklist</label>
                         <div className="flex items-center space-x-3 cursor-pointer" onClick={() => setSetupChecked(!setupChecked)}>
                             <div className={`w-5 h-5 rounded flex items-center justify-center border transition-all ${setupChecked ? 'bg-primary border-primary' : 'border-slate-600'}`}>
@@ -269,7 +269,7 @@ export const TradeFormModal: React.FC<TradeFormModalProps> = ({ isOpen, onClose,
                 <button
                     type="submit"
                     disabled={loading || !setupChecked || !riskChecked}
-                    className={`w-full text-white font-black py-5 rounded-2xl transition-all shadow-lg active:scale-95 uppercase tracking-wider text-xs mt-4 disabled:opacity-50 disabled:cursor-not-allowed ${isEdit ? 'bg-amber-500 hover:bg-amber-600 shadow-amber-500/25' : 'bg-primary hover:bg-primary-dark shadow-primary/25'}`}
+                    className={`w-full text-background font-headline font-black py-5 rounded-sm transition-all shadow-[0_0_15px_rgba(0,229,255,0.2)] active:scale-95 uppercase tracking-[0.2em] text-sm mt-4 disabled:opacity-50 disabled:cursor-not-allowed ${isEdit ? 'bg-amber-500 hover:bg-amber-400 font-headline' : 'bg-primary hover:bg-primary-dark'}`}
                 >
                     {loading ? 'Menyimpan...' : (isEdit ? 'Update Transaksi' : 'Simpan Transaksi')}
                 </button>

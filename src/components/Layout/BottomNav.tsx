@@ -16,36 +16,35 @@ export const BottomNav: React.FC<BottomNavProps> = ({ activeTab, setActiveTab })
     ];
 
     return (
-        <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-surface/90 backdrop-blur-xl border-t border-white/10 px-6 py-2 pb-5 z-[70] flex justify-between items-center shadow-2xl">
-            {menuItems.map((item) => {
-                const Icon = item.icon;
-                const isActive = activeTab === item.id;
+        <nav className="fixed bottom-0 left-0 right-0 z-[70] flex justify-center pb-safe pointer-events-none">
+            <div className="bg-surface-container-highest/50 backdrop-blur-[40px] rounded-full mb-6 mx-auto w-max px-6 py-3 flex items-center gap-8 md:gap-10 shadow-2xl shadow-black/50 pointer-events-auto border border-white/5">
+                {menuItems.map((item) => {
+                    const Icon = item.icon;
+                    const isActive = activeTab === item.id;
 
-                if (item.isFab) {
-                    return (
-                        <div key={item.id} className="relative -top-6">
+                    if (item.isFab) {
+                        return (
                             <button
-                                onClick={() => setActiveTab(item.id)} // This acts as trigger for Add Modal in parent
-                                className="w-14 h-14 bg-gradient-to-tr from-primary to-primary-dark rounded-full flex items-center justify-center text-white shadow-xl shadow-primary/30 active:scale-95 transition-transform"
+                                key={item.id}
+                                onClick={() => setActiveTab(item.id)}
+                                className="flex items-center justify-center text-primary-dark hover:text-primary transition-all active:scale-95 duration-200"
                             >
-                                <Icon className="w-6 h-6" />
+                                <Icon className="w-8 h-8 md:w-10 md:h-10 text-primary drop-shadow-[0_0_8px_rgba(0,229,255,0.8)]" />
                             </button>
-                        </div>
-                    );
-                }
+                        );
+                    }
 
-                return (
-                    <button
-                        key={item.id}
-                        onClick={() => setActiveTab(item.id)}
-                        className={`flex flex-col items-center gap-1 transition-all duration-300 ${isActive ? 'text-primary scale-105' : 'text-slate-500 hover:text-slate-300'
-                            }`}
-                    >
-                        <Icon className={`w-6 h-6 ${isActive ? 'fill-primary/20' : ''}`} strokeWidth={isActive ? 2.5 : 2} />
-                        <span className="text-[10px] font-bold tracking-wide">{item.label}</span>
-                    </button>
-                );
-            })}
-        </div>
+                    return (
+                        <button
+                            key={item.id}
+                            onClick={() => setActiveTab(item.id)}
+                            className={`relative flex items-center justify-center transition-all active:scale-90 duration-200 ${isActive ? "text-primary after:content-[''] after:absolute after:-bottom-3 after:w-1 after:h-1 after:bg-primary after:rounded-full after:shadow-[0_0_8px_#00E5FF]" : "text-slate-500 opacity-60 hover:opacity-100 hover:text-primary"}`}
+                        >
+                            <Icon className={`w-6 h-6 md:w-7 md:h-7`} />
+                        </button>
+                    );
+                })}
+            </div>
+        </nav>
     );
 };

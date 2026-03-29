@@ -24,11 +24,24 @@
 
 @layer utilities {
   .glass-panel {
-    @apply bg-surface/50 backdrop-blur-xl border border-white/5 shadow-xl;
+    @apply bg-surface-container-highest/40 backdrop-blur-[30px] border border-white/5 shadow-xl;
   }
 
   .glass-card {
-    @apply bg-glass backdrop-blur-md border border-white/5 shadow-lg hover:shadow-primary/10 transition-all duration-300;
+    @apply bg-surface-container-low backdrop-blur-md border-[0px] shadow-lg hover:bg-surface transition-all duration-300;
+  }
+
+  .mesh-gradient {
+    background: radial-gradient(at 0% 0%, rgba(0, 229, 255, 0.08) 0, transparent 50%),
+                radial-gradient(at 50% 100%, rgba(204, 255, 0, 0.03) 0, transparent 50%);
+  }
+
+  .radial-progress {
+    display: grid;
+    place-content: center;
+    border-radius: 50%;
+    background: radial-gradient(closest-side, #050505 80%, transparent 0 99.9%, #050505 0),
+                conic-gradient(var(--tw-gradient-from) calc(var(--value) * 1%), #131313 0);
   }
 
   .text-glow {

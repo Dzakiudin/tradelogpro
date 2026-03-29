@@ -75,8 +75,8 @@ export const TimeAnalysis: React.FC<TimeAnalysisProps> = ({ trades, currency }) 
         datasets: [{
             label: 'Net P/L per Hour',
             data: hourlyStats.map(s => s.pnl),
-            backgroundColor: hourlyStats.map(s => s.pnl >= 0 ? 'rgba(16, 185, 129, 0.8)' : 'rgba(239, 68, 68, 0.8)'),
-            borderRadius: 6,
+            backgroundColor: hourlyStats.map(s => s.pnl >= 0 ? '#CCFF00' : '#FF0055'),
+            borderRadius: 2,
             borderSkipped: false,
         }]
     };
@@ -117,9 +117,9 @@ export const TimeAnalysis: React.FC<TimeAnalysisProps> = ({ trades, currency }) 
 
     if (trades.length === 0) {
         return (
-            <div className="bg-slate-900 p-6 rounded-3xl border border-white/5 text-center flex flex-col items-center justify-center min-h-[200px]">
+            <div className="bg-surface-container p-6 rounded-sm border-none text-center flex flex-col items-center justify-center min-h-[200px]">
                 <Clock className="w-12 h-12 text-slate-700 mb-4" />
-                <p className="text-slate-500 font-bold uppercase tracking-widest text-xs">Belum ada data waktu</p>
+                <p className="text-slate-500 font-label font-bold uppercase tracking-widest text-xs">Belum ada data waktu</p>
             </div>
         );
     }
@@ -128,22 +128,22 @@ export const TimeAnalysis: React.FC<TimeAnalysisProps> = ({ trades, currency }) 
         <div className="space-y-6">
             {/* Insights Banner */}
             {bestSession && (
-                <div className="bg-gradient-to-r from-primary/20 to-secondary/20 p-6 rounded-3xl border border-white/10 relative overflow-hidden">
+                <div className="glass-panel p-6 rounded-sm border-none relative overflow-hidden">
                     <div className="absolute top-0 right-0 w-32 h-32 bg-primary/20 rounded-full blur-3xl"></div>
                     <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
                         <div>
-                            <h3 className="text-white font-black text-xl flex items-center gap-2 mb-1">
+                            <h3 className="text-white font-headline font-black text-xl flex items-center gap-2 mb-1 uppercase tracking-widest">
                                 <TrendingUp className="w-6 h-6 text-primary" />
-                                WAKTU OPTIMAL: SESI {bestSession.name.toUpperCase()}
+                                WAKTU OPTIMAL: SESI {bestSession.name}
                             </h3>
-                            <p className="text-slate-400 text-sm font-medium leading-relaxed max-w-lg">
+                            <p className="text-slate-400 font-body text-sm font-medium leading-relaxed max-w-lg">
                                 Historis menunjukkan sesi {bestSession.name} memberikan win rate tertinggi 
-                                <strong className="text-white"> ({Math.round((bestSession.wins/bestSession.trades)*100)}%)</strong>. 
+                                <strong className="text-white ml-1">({Math.round((bestSession.wins/bestSession.trades)*100)}%)</strong>. 
                                 {bestHour && ` Jam paling profitable jatuh pada ${bestHour.hour.toString().padStart(2, '0')}:00.`}
                             </p>
                         </div>
                         <div className="text-right shrink-0">
-                            <span className="text-3xl" title={bestSession.name}>{bestSession.icon}</span>
+                            <span className="text-3xl drop-shadow-lg" title={bestSession.name}>{bestSession.icon}</span>
                         </div>
                     </div>
                 </div>
@@ -156,34 +156,34 @@ export const TimeAnalysis: React.FC<TimeAnalysisProps> = ({ trades, currency }) 
                     const avgRR = sess.trades > 0 ? (sess.totalRR / sess.trades).toFixed(1) : 0;
                     
                     return (
-                        <div key={idx} className="bg-surface/50 p-5 rounded-3xl border border-white/5 hover:border-white/10 transition-colors">
+                        <div key={idx} className="bg-surface-container-low p-5 rounded-sm border-none shadow-sm hover:bg-surface-container transition-colors">
                             <div className="flex items-center justify-between mb-4">
-                                <span className="font-bold text-white text-sm uppercase tracking-widest flex items-center gap-2">
-                                    <span className="text-xl">{sess.icon}</span> {sess.name}
+                                <span className="font-headline font-black text-white text-sm uppercase tracking-widest flex items-center gap-2">
+                                    <span className="text-xl drop-shadow-sm">{sess.icon}</span> {sess.name}
                                 </span>
-                                <span className="text-xs font-bold text-slate-500 uppercase">
+                                <span className="text-xs font-label font-bold text-slate-500 uppercase tracking-widest">
                                     {sess.start.toString().padStart(2,'0')}:00 - {sess.end.toString().padStart(2,'0')}:59
                                 </span>
                             </div>
                             
-                            <div className="grid grid-cols-2 gap-4">
+                            <div className="grid grid-cols-2 gap-4 mt-6">
                                 <div>
-                                    <p className="text-[10px] text-slate-500 uppercase tracking-widest font-bold mb-1">Win Rate</p>
-                                    <p className={`text-xl font-black ${wr >= 50 ? 'text-emerald-400' : 'text-slate-300'}`}>{wr}%</p>
+                                    <p className="text-[10px] font-label text-slate-500 uppercase tracking-widest font-bold mb-1">Win Rate</p>
+                                    <p className={`text-xl font-headline font-black ${wr >= 50 ? 'text-success' : 'text-slate-300'}`}>{wr}%</p>
                                 </div>
                                 <div>
-                                    <p className="text-[10px] text-slate-500 uppercase tracking-widest font-bold mb-1">Net P/L</p>
-                                    <p className={`text-xl font-black ${sess.pnl > 0 ? 'text-emerald-400' : (sess.pnl < 0 ? 'text-rose-400' : 'text-slate-300')}`}>
+                                    <p className="text-[10px] font-label text-slate-500 uppercase tracking-widest font-bold mb-1">Net P/L</p>
+                                    <p className={`text-xl font-headline font-black ${sess.pnl > 0 ? 'text-success' : (sess.pnl < 0 ? 'text-danger' : 'text-slate-300')}`}>
                                         {sess.pnl > 0 ? '+' : (sess.pnl < 0 ? '-' : '')}{formatCurrency(Math.abs(sess.pnl), currency)}
                                     </p>
                                 </div>
                                 <div>
-                                    <p className="text-[10px] text-slate-500 uppercase tracking-widest font-bold mb-1">Trades</p>
-                                    <p className="text-sm font-bold text-white">{sess.trades}</p>
+                                    <p className="text-[10px] font-label text-slate-500 uppercase tracking-widest font-bold mb-1">Trades</p>
+                                    <p className="text-sm font-headline font-black text-white">{sess.trades}</p>
                                 </div>
                                 <div>
-                                    <p className="text-[10px] text-slate-500 uppercase tracking-widest font-bold mb-1">Avg R:R</p>
-                                    <p className="text-sm font-bold text-white">1:{avgRR}</p>
+                                    <p className="text-[10px] font-label text-slate-500 uppercase tracking-widest font-bold mb-1">Avg R:R</p>
+                                    <p className="text-sm font-headline font-black text-white">1:{avgRR}</p>
                                 </div>
                             </div>
                         </div>
@@ -192,13 +192,13 @@ export const TimeAnalysis: React.FC<TimeAnalysisProps> = ({ trades, currency }) 
             </div>
 
             {/* History Bar Chart */}
-            <div className="bg-slate-900 p-6 rounded-3xl border border-white/5">
+            <div className="bg-surface-container-low p-6 rounded-sm border-none shadow-sm">
                 <div className="mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div>
-                        <h3 className="text-white font-black text-lg tracking-tight flex items-center gap-2">
-                            <Clock className="w-5 h-5 text-primary" /> HISTORI WAKTU
+                        <h3 className="text-white font-headline font-black text-lg tracking-[0.1em] flex items-center gap-2">
+                            <Clock className="w-5 h-5 text-primary drop-shadow-[0_0_8px_rgba(0,229,255,0.5)]" /> HISTORI WAKTU
                         </h3>
-                        <p className="text-slate-500 text-xs font-bold uppercase tracking-widest">P/L by Hour (Local Time)</p>
+                        <p className="text-slate-500 text-xs font-label font-bold uppercase tracking-widest mt-1">P/L by Hour (Local Time)</p>
                     </div>
                 </div>
                 
@@ -207,11 +207,11 @@ export const TimeAnalysis: React.FC<TimeAnalysisProps> = ({ trades, currency }) 
                 </div>
             </div>
             
-            <div className="flex items-start gap-3 p-4 bg-orange-500/10 border border-orange-500/20 rounded-2xl">
-                <AlertTriangle className="w-5 h-5 text-orange-400 shrink-0 mt-0.5" />
-                <p className="text-xs font-medium text-orange-300/80 leading-relaxed">
+            <div className="flex items-start gap-3 p-4 bg-danger/5 border-none rounded-sm">
+                <AlertTriangle className="w-5 h-5 text-danger shrink-0 mt-0.5" />
+                <p className="text-xs font-body font-medium text-danger/80 leading-relaxed">
                     <strong>Catatan:</strong> Analisis waktu menggunakan local time Anda saat transaksi disimpan. 
-                    Hindari sesi dengan <span className="text-rose-400">hasil negatif berulang</span> untuk menjaga ekuitas.
+                    Hindari sesi dengan <span className="text-white font-bold">hasil negatif berulang</span> untuk menjaga ekuitas.
                 </p>
             </div>
         </div>

@@ -97,27 +97,24 @@ export const StatsCards: React.FC<StatsCardsProps> = ({ trades, currency }) => {
     ];
 
     return (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
             {cards.map((card, idx) => (
-                <div key={idx} className="glass-card rounded-3xl p-6 relative overflow-hidden group">
-                    <div className="flex justify-between items-start mb-4">
-                        <div>
-                            <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">{card.label}</p>
-                            <h3 className="text-2xl font-black text-white tracking-tight">{card.value}</h3>
+                <div key={idx} className="bg-surface-container-low p-6 md:p-8 rounded-sm shadow-sm transition-colors hover:bg-surface-container group flex flex-col justify-between">
+                    <div className="flex items-center justify-between mb-8">
+                        <span className="font-label text-[10px] uppercase tracking-[0.2em] text-slate-500">{card.label}</span>
+                        <card.icon className="w-5 h-5 text-slate-500" />
+                    </div>
+                    <div className="font-headline text-4xl lg:text-5xl font-bold tracking-tighter mb-2" style={{ color: card.label === 'Net Profit' ? card.color : 'white' }}>
+                        {card.value}
+                    </div>
+                    <div className="flex justify-between items-center">
+                        <div className="flex items-center gap-2 text-[10px] font-label uppercase tracking-widest text-slate-500">
+                            <span>{card.subtext}</span>
                         </div>
-                        <div className={`p-3 rounded-2xl ${card.bg} text-white`}>
-                            <card.icon className="w-5 h-5" style={{ color: card.color }} />
+                        <div className="h-8 w-1/3 opacity-50 group-hover:opacity-100 transition-opacity">
+                            <Line data={getSparklineData(card.color, card.trend)} options={sparklineOptions} />
                         </div>
                     </div>
-
-                    <div className="h-10 w-full opacity-50 group-hover:opacity-100 transition-opacity">
-                        <Line data={getSparklineData(card.color, card.trend)} options={sparklineOptions} />
-                    </div>
-
-                    <p className="text-[10px] font-medium text-slate-500 mt-2">{card.subtext}</p>
-
-                    {/* Glow Effect */}
-                    <div className="absolute -right-6 -bottom-6 w-24 h-24 bg-gradient-to-br from-white/5 to-white/0 rounded-full blur-2xl pointer-events-none"></div>
                 </div>
             ))}
         </div>

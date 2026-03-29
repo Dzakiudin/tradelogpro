@@ -22,9 +22,9 @@ export const WinRateChart: React.FC<WinRateChartProps> = ({ trades }) => {
         datasets: [{
             data: [outcomes.Profit, outcomes.Loss, outcomes.BE],
             backgroundColor: [
-                '#10B981', // Emerald 500 (Win)
-                '#EF4444', // Red 500 (Loss)
-                '#64748B', // Slate 500 (BE)
+                '#CCFF00', // Success
+                '#FF0055', // Danger
+                '#334155', // Neutral
             ],
             borderWidth: 0,
             hoverOffset: 4
@@ -58,14 +58,14 @@ export const WinRateChart: React.FC<WinRateChartProps> = ({ trades }) => {
     const winRate = total > 0 ? Math.round((outcomes.Profit / total) * 100) : 0;
 
     return (
-        <div className="h-full min-h-[300px] bg-slate-900 p-6 rounded-3xl border border-white/5 flex flex-col items-center justify-center relative">
-            <h3 className="absolute top-6 left-6 text-white font-black text-lg tracking-tight">Win Ratio</h3>
+        <div className="h-full min-h-[300px] bg-surface-container-low p-6 rounded-sm border-none shadow-sm flex flex-col items-center justify-center relative">
+            <h3 className="absolute top-6 left-6 text-white font-headline font-black text-lg tracking-[0.1em] uppercase">Win Ratio</h3>
 
-            <div className="relative w-48 h-48 mt-4">
+            <div className="relative w-48 h-48 mt-8">
                 <Doughnut data={data} options={options} />
                 <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                    <span className="text-3xl font-black text-white">{winRate}%</span>
-                    <span className="text-[10px] uppercase font-bold text-slate-500 tracking-widest">Win Rate</span>
+                    <span className="text-3xl font-headline font-black text-white">{winRate}%</span>
+                    <span className="text-[10px] uppercase font-label font-bold text-slate-500 tracking-widest mt-1">Win Rate</span>
                 </div>
             </div>
         </div>

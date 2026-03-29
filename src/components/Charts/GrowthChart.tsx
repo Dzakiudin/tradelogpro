@@ -30,12 +30,12 @@ export const GrowthChart: React.FC<GrowthChartProps> = ({ trades }) => {
         datasets: [{
             label: 'Account Balance',
             data: dataWithStart,
-            borderColor: '#3B82F6', // brand-blue
+            borderColor: '#00E5FF', // primary-aqua
             backgroundColor: (context: any) => {
                 const ctx = context.chart.ctx;
                 const gradient = ctx.createLinearGradient(0, 0, 0, 400);
-                gradient.addColorStop(0, 'rgba(59, 130, 246, 0.5)');
-                gradient.addColorStop(1, 'rgba(59, 130, 246, 0.0)');
+                gradient.addColorStop(0, 'rgba(0, 229, 255, 0.3)');
+                gradient.addColorStop(1, 'rgba(0, 229, 255, 0.0)');
                 return gradient;
             },
             fill: true,
@@ -43,7 +43,7 @@ export const GrowthChart: React.FC<GrowthChartProps> = ({ trades }) => {
             borderWidth: 3,
             pointRadius: 0,
             pointHoverRadius: 6,
-            pointBackgroundColor: '#3B82F6',
+            pointBackgroundColor: '#00E5FF',
             pointBorderColor: '#fff',
             pointBorderWidth: 2,
         }]
@@ -89,12 +89,14 @@ export const GrowthChart: React.FC<GrowthChartProps> = ({ trades }) => {
     };
 
     return (
-        <div className="w-full h-[300px] md:h-[400px] bg-slate-900 p-4 rounded-3xl border border-white/5 relative overflow-hidden">
-            <div className="mb-4">
-                <h3 className="text-white font-black text-lg tracking-tight">Portfolio Growth</h3>
-                <p className="text-slate-500 text-xs font-bold uppercase tracking-widest">Performance Curve</p>
+        <div className="w-full h-[300px] md:h-[400px] bg-surface-container-low p-6 rounded-sm border-none shadow-sm relative overflow-hidden">
+            <div className="mb-6">
+                <h3 className="text-white font-headline font-black text-lg tracking-[0.1em] uppercase">Portfolio Growth</h3>
+                <p className="text-slate-500 text-xs font-label font-bold uppercase tracking-widest mt-1">Performance Curve</p>
             </div>
-            <Line data={data} options={options} />
+            <div className="h-[230px] md:h-[300px]">
+                <Line data={data} options={options} />
+            </div>
         </div>
     );
 };

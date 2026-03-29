@@ -35,42 +35,42 @@ export const AuthForm: React.FC = () => {
                 <div className="absolute bottom-[-20%] right-[-20%] w-[600px] h-[600px] bg-secondary/20 rounded-full blur-[128px] animate-pulse-slow" style={{ animationDelay: '2s' }}></div>
             </div>
 
-            <div className="w-full max-w-md glass-panel p-8 md:p-10 rounded-[2.5rem] shadow-2xl relative z-10 animate-fade-in border-t border-white/10">
+            <div className="w-full max-w-md glass-panel p-8 md:p-10 rounded-md shadow-2xl relative z-10 animate-fade-in border-none">
                 <div className="flex flex-col items-center mb-10">
-                    <div className="p-4 bg-gradient-to-tr from-primary to-secondary rounded-2xl text-white mb-6 shadow-lg shadow-primary/30">
-                        <TrendingUp className="w-10 h-10" />
+                    <div className="p-4 bg-surface-container-low rounded-sm text-primary mb-6 shadow-sm border-none">
+                        <TrendingUp className="w-10 h-10 drop-shadow-[0_0_8px_rgba(0,229,255,0.5)]" />
                     </div>
-                    <h1 className="text-3xl font-black tracking-tighter text-white mb-2">
-                        TradeLog<span className="text-primary">Pro</span>
+                    <h1 className="text-3xl font-headline font-black tracking-tighter text-white mb-2">
+                        TRADELOG<span className="text-primary">PRO</span>
                     </h1>
-                    <p className="text-slate-400 text-sm font-medium text-center max-w-xs">
-                        The professional way to track, analyze, and improve your trading performance.
+                    <p className="text-slate-500 text-sm font-label font-bold text-center max-w-xs">
+                        Institutional grade trade execution tracking
                     </p>
                 </div>
 
-                <form onSubmit={handleSubmit} className="space-y-5">
+                <form onSubmit={handleSubmit} className="space-y-6">
                     {error && (
-                        <div className="p-4 bg-rose-500/10 border border-rose-500/20 text-rose-400 text-xs font-bold rounded-2xl text-center">
+                        <div className="p-4 bg-danger/10 border-none text-danger text-xs font-bold rounded-sm text-center font-label">
                             {error}
                         </div>
                     )}
-                    <div className="space-y-1">
-                        <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Email</label>
+                    <div className="space-y-2">
+                        <label className="text-[10px] font-label font-bold text-slate-500 uppercase tracking-[0.2em] block">Email</label>
                         <input
                             type="email"
                             required
-                            className="w-full px-6 py-4 bg-background/50 border border-white/5 rounded-2xl focus:ring-2 focus:ring-primary outline-none text-white placeholder:text-slate-600 focus:border-primary/50 transition-all font-medium"
-                            placeholder="trader@example.com"
+                            className="w-full px-6 py-4 bg-surface-container-highest border-none rounded-sm focus:ring-1 focus:ring-primary outline-none text-white placeholder:text-slate-600 font-headline shadow-inner text-lg transition-all"
+                            placeholder="trader@institution.com"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                         />
                     </div>
-                    <div className="space-y-1">
-                        <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Password</label>
+                    <div className="space-y-2">
+                        <label className="text-[10px] font-label font-bold text-slate-500 uppercase tracking-[0.2em] block">Password</label>
                         <input
                             type="password"
                             required
-                            className="w-full px-6 py-4 bg-background/50 border border-white/5 rounded-2xl focus:ring-2 focus:ring-primary outline-none text-white placeholder:text-slate-600 focus:border-primary/50 transition-all font-medium"
+                            className="w-full px-6 py-4 bg-surface-container-highest border-none rounded-sm focus:ring-1 focus:ring-primary outline-none text-white placeholder:text-slate-600 font-headline shadow-inner text-lg transition-all"
                             placeholder="••••••••"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
@@ -80,9 +80,9 @@ export const AuthForm: React.FC = () => {
                     <button
                         type="submit"
                         disabled={loading}
-                        className="w-full bg-gradient-to-r from-primary to-primary-dark hover:to-primary text-white font-black py-5 rounded-2xl transition-all shadow-lg shadow-primary/25 active:scale-[0.98] mt-6 flex items-center justify-center gap-2 group disabled:opacity-70 disabled:cursor-not-allowed"
+                        className="w-full bg-primary hover:bg-primary-dark text-background font-headline font-black uppercase tracking-[0.2em] py-5 rounded-sm transition-all shadow-[0_0_20px_rgba(0,229,255,0.2)] active:scale-[0.98] mt-8 flex items-center justify-center gap-2 group disabled:opacity-70 disabled:cursor-not-allowed"
                     >
-                        {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : (isLogin ? 'Sign In' : 'Create Account')}
+                        {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : (isLogin ? 'Initialize Session' : 'Request Access')}
                         {!loading && <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />}
                     </button>
                 </form>

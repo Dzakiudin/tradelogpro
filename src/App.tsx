@@ -19,7 +19,7 @@ const TradingCalendar = lazy(() => import('./components/Calendar/TradingCalendar
 
 // Loading skeleton for lazy components
 const ChartSkeleton = () => (
-    <div className="animate-pulse bg-surface/50 rounded-3xl border border-white/5 h-64 flex items-center justify-center">
+    <div className="animate-pulse bg-surface-container-low rounded-sm shadow-sm h-64 flex items-center justify-center">
         <div className="w-8 h-8 border-2 border-primary/30 border-t-primary rounded-full animate-spin" />
     </div>
 );
@@ -83,9 +83,9 @@ function App() {
   };
 
   if (loading) return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-slate-900 gap-4">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-background gap-4">
       <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
-      <p className="text-slate-500 text-sm font-bold uppercase tracking-widest animate-pulse">Loading...</p>
+      <p className="text-slate-500 text-sm font-label font-bold uppercase tracking-widest animate-pulse">Loading...</p>
     </div>
   );
 
@@ -150,7 +150,7 @@ function App() {
 
       {/* Calendar Tab */}
       {activeTab === 'calendar' && (
-        <div className="h-[calc(100vh-140px)] animate-slide-up">
+        <div className="animate-slide-up pb-8">
           <Suspense fallback={<ChartSkeleton />}>
             <TradingCalendar trades={trades} currency={settings.currency} />
           </Suspense>
@@ -165,18 +165,12 @@ function App() {
           </Suspense>
           
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <div className="bg-slate-900 p-6 rounded-3xl border border-white/5">
-              <h2 className="text-white font-bold mb-4">Capital Growth</h2>
-              <Suspense fallback={<ChartSkeleton />}>
-                <GrowthChart trades={trades} />
-              </Suspense>
-            </div>
-            <div className="bg-slate-900 p-6 rounded-3xl border border-white/5">
-              <h2 className="text-white font-bold mb-4">Performance Distribution</h2>
-              <Suspense fallback={<ChartSkeleton />}>
-                <WinRateChart trades={trades} />
-              </Suspense>
-            </div>
+            <Suspense fallback={<ChartSkeleton />}>
+              <GrowthChart trades={trades} />
+            </Suspense>
+            <Suspense fallback={<ChartSkeleton />}>
+              <WinRateChart trades={trades} />
+            </Suspense>
           </div>
         </div>
       )}

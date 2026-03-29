@@ -8,27 +8,32 @@ export default {
         extend: {
             fontFamily: {
                 sans: ['"Inter"', 'sans-serif'],
+                headline: ['"Space Grotesk"', 'sans-serif'],
+                label: ['"Inter"', 'sans-serif'],
                 mono: ['"JetBrains Mono"', 'monospace'],
             },
             colors: {
-                background: '#0f172a', // slate-900
-                surface: '#1e293b',    // slate-800
-                'surface-light': '#334155', // slate-700
-                primary: '#3b82f6',    // blue-500
-                'primary-dark': '#2563eb', // blue-600
-                secondary: '#8b5cf6',  // violet-500
-                success: '#10b981',    // emerald-500
-                danger: '#ef4444',     // red-500
-                warning: '#f59e0b',    // amber-500
+                background: '#050505',
+                surface: '#0e0e0e',
+                'surface-light': '#1a1a1a', 
+                'surface-container-low': '#131313',
+                'surface-container': '#1a1a1a',
+                'surface-container-highest': '#262626',
+                primary: '#00e5ff',
+                'primary-dark': '#00b3cc', 
+                secondary: '#ccff00', 
+                success: '#ccff00', 
+                danger: '#ff0055',    
+                warning: '#f59e0b',
                 text: {
-                    main: '#f8fafc',     // slate-50
-                    muted: '#94a3b8',    // slate-400
+                    main: '#fcfcfc',
+                    muted: '#808080',
                 }
             },
             backgroundImage: {
                 'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
-                'glass': 'linear-gradient(145deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.01) 100%)',
-                'glass-hover': 'linear-gradient(145deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.02) 100%)',
+                'glass': 'linear-gradient(135deg, rgba(38, 38, 38, 0.4) 0%, rgba(38, 38, 38, 0.1) 100%)',
+                'glass-hover': 'linear-gradient(135deg, rgba(38, 38, 38, 0.6) 0%, rgba(38, 38, 38, 0.2) 100%)',
             },
             keyframes: {
                 fadeIn: {
