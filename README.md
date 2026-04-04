@@ -2,6 +2,8 @@
 
 > Institutional-grade trading journal with real-time analytics, cloud sync, and a premium dark UI.
 
+![TradeLogPro Dashboard](screenshots/dashboard.png)
+
 ## 🚀 Overview
 
 **TradeLogPro** is a high-performance trading journal application designed for professional traders. Built with the **"Institutional Ghost"** design system — a minimalist, high-contrast dark theme featuring tonal surface separation, neon accent colors, and precision typography — it delivers an immersive experience that feels like a professional trading terminal.
@@ -38,6 +40,16 @@ Track performance, analyze setups, maintain discipline, and export reports — a
 - **Currency Selection** — IDR, USD, EUR, JPY with proper formatting
 - **Monthly Target Config** — Set and track monthly profit goals
 - **Quick Logout** — Log-out button accessible directly from Settings
+
+## 📸 Preview
+
+| Trading Calendar | Trade History |
+|:---:|:---:|
+| ![Calendar](screenshots/calendar.png) | ![Trade List](screenshots/trades.png) |
+
+| Input Trade | Session Analysis |
+|:---:|:---:|
+| ![Input](screenshots/input.png) | ![Analysis](screenshots/analysis.png) |
 
 ## 🎨 Design System — "Institutional Ghost"
 
