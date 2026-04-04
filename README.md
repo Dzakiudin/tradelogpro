@@ -2,7 +2,9 @@
 
 > Institutional-grade trading journal with real-time analytics, cloud sync, and a premium dark UI.
 
-![TradeLogPro Dashboard](screenshots/dashboard.png)
+<p align="center">
+  <img src="screenshots/dashboard.png" alt="TradeLogPro Dashboard">
+</p>
 
 ## 🚀 Overview
 
