@@ -45,6 +45,10 @@ Track performance, analyze setups, maintain discipline, and export reports — a
 
 ## 📸 Preview
 
+<p align="center">
+  <img src="screenshots/dashboard.png" alt="Dashboard" width="80%">
+</p>
+
 | Trading Calendar | Trade History |
 |:---:|:---:|
 | ![Calendar](screenshots/calendar.png) | ![Trade List](screenshots/trades.png) |
