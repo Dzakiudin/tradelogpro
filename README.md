@@ -3,7 +3,7 @@
 > Institutional-grade trading journal with real-time analytics, cloud sync, and a premium dark UI.
 
 <p align="center">
-  <img src="screenshots/dashboard.png" alt="TradeLogPro Dashboard">
+  <img src="screenshots/Gradient Mobile Application tradelogpro.jpg" alt="TradeLogPro Mobile App">
 </p>
 
 ## 🚀 Overview
